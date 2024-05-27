@@ -11,7 +11,7 @@ import LayoutGuest from '@/layouts/LayoutGuest.vue'
     <SectionFullScreen v-slot="{ cardClass }" bg="pinkRed">
       <CardBox :class="cardClass">
         <div class="space-y-3">
-          <h1 class="text-2xl">Unhandled exception</h1>
+          <h1 class="text-2xl">404 Page Not found</h1>
 
           <p>An Error Occurred</p>
         </div>
