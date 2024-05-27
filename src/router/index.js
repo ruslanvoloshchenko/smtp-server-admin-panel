@@ -1,13 +1,22 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Style from '@/views/StyleView.vue'
 import Home from '@/views/HomeView.vue'
+import Login from '@/views/LoginView.vue'
 
 const routes = [
   {
     meta: {
-      title: 'Select style'
+      title: 'Login'
     },
     path: '/',
+    name: 'login',
+    component: Login
+  },
+  {
+    meta: {
+      title: 'Select style'
+    },
+    path: '/style',
     name: 'style',
     component: Style
   },
@@ -23,18 +32,26 @@ const routes = [
   },
   {
     meta: {
-      title: 'Tables'
+      title: 'Users'
     },
-    path: '/tables',
-    name: 'tables',
+    path: '/users',
+    name: 'users',
     component: () => import('@/views/TablesView.vue')
   },
   {
     meta: {
-      title: 'Forms'
+      title: 'Users edit'
     },
-    path: '/forms',
-    name: 'forms',
+    path: '/users/:userId/edit',
+    name: 'users.edit',
+    component: () => import('@/views/FormsView.vue')
+  },
+  {
+    meta: {
+      title: 'Users create'
+    },
+    path: '/users/create',
+    name: 'users.create',
     component: () => import('@/views/FormsView.vue')
   },
   {
@@ -63,17 +80,9 @@ const routes = [
   },
   {
     meta: {
-      title: 'Login'
-    },
-    path: '/login',
-    name: 'login',
-    component: () => import('@/views/LoginView.vue')
-  },
-  {
-    meta: {
       title: 'Error'
     },
-    path: '/error',
+    path: '/:catchAll(.*)',
     name: 'error',
     component: () => import('@/views/ErrorView.vue')
   }
@@ -82,6 +91,24 @@ const routes = [
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
+  parseQuery(query) {
+    if (query.userId) {
+      return {
+        ...query,
+        userId: parseInt(query.userId)
+      };
+    }
+    return {};
+  },
+  stringifyQuery(query) {
+    if (query.userId) {
+      return {
+        ...query,
+        userId: query.userId.toString()
+      };
+    }
+    return '';
+  },
   scrollBehavior(to, from, savedPosition) {
     return savedPosition || { top: 0 }
   }
