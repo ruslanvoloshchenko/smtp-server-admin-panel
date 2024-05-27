@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export const useDarkModeStore = defineStore('darkMode', () => {
-  const isEnabled = ref(false)
+  const isEnabled = ref(true)
 
   function set(payload = null) {
     isEnabled.value = payload !== null ? payload : !isEnabled.value
@@ -17,9 +17,9 @@ export const useDarkModeStore = defineStore('darkMode', () => {
     }
 
     // You can persist dark mode setting
-    // if (typeof localStorage !== 'undefined') {
-    //   localStorage.setItem('darkMode', isEnabled.value ? '1' : '0')
-    // }
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('darkMode', isEnabled.value ? '1' : '0')
+    }
   }
 
   return {
