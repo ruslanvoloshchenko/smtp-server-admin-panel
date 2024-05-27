@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import axios from 'axios'
 
+const API_URL = "http://localhost:8000/api/v1/users"
+
 export const useMainStore = defineStore('main', () => {
   const userName = ref('John Doe')
   const userEmail = ref('doe.doe.doe@example.com')
@@ -18,6 +20,7 @@ export const useMainStore = defineStore('main', () => {
 
   const clients = ref([])
   const history = ref([])
+  const users = ref([])
 
   function setUser(payload) {
     if (payload.name) {
@@ -39,11 +42,68 @@ export const useMainStore = defineStore('main', () => {
       })
   }
 
+  function fetchUsers() {
+    axios.get(`${API_URL}`)
+    .then((result) => {
+      users.value = result?.data?.data
+    })
+    .catch((err) => {
+      alert(err.message)
+    })
+  }
+
   function fetchSampleHistory() {
     axios
       .get(`data-sources/history.json`)
       .then((result) => {
         history.value = result?.data?.data
+      })
+      .catch((error) => {
+        alert(error.message)
+      })
+  }
+
+  function deleteUser(id) {
+    axios
+      .delete(`${API_URL}/${id}`)
+      .then((result) => {
+        console.log(result)
+        fetchUsers()
+      })
+      .catch((error) => {
+        alert(error.message)
+      })
+  }
+
+  function createUser(data) {
+    axios
+      .post(`${API_URL}`, data)
+      .then((result) => {
+        console.log(result)
+        fetchUsers()
+      })
+      .catch((error) => {
+        alert(error.message)
+      })
+  }
+
+  function getUser(id, cb) {
+    axios
+      .get(`${API_URL}/${id}`)
+      .then((result) => {
+        cb(result)
+      })
+      .catch((error) => {
+        alert(error.message)
+      })
+  }
+
+  function updateUser(id, data) {
+    axios
+      .patch(`${API_URL}/${id}`, data)
+      .then((result) => {
+        console.log(result)
+        fetchUsers()
       })
       .catch((error) => {
         alert(error.message)
@@ -57,7 +117,13 @@ export const useMainStore = defineStore('main', () => {
     isFieldFocusRegistered,
     clients,
     history,
+    users,
     setUser,
+    getUser,
+    createUser,
+    deleteUser,
+    updateUser,
+    fetchUsers,
     fetchSampleClients,
     fetchSampleHistory
   }
