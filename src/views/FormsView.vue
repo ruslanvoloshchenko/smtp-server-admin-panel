@@ -1,168 +1,95 @@
 <script setup>
-import { reactive, ref } from 'vue'
-import { mdiBallotOutline, mdiAccount, mdiMail, mdiGithub } from '@mdi/js'
+import { reactive, ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { mdiAccount, mdiMail, mdiTableBorder } from '@mdi/js'
 import SectionMain from '@/components/SectionMain.vue'
 import CardBox from '@/components/CardBox.vue'
-import FormCheckRadioGroup from '@/components/FormCheckRadioGroup.vue'
-import FormFilePicker from '@/components/FormFilePicker.vue'
 import FormField from '@/components/FormField.vue'
 import FormControl from '@/components/FormControl.vue'
 import BaseDivider from '@/components/BaseDivider.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import BaseButtons from '@/components/BaseButtons.vue'
-import SectionTitle from '@/components/SectionTitle.vue'
 import LayoutAuthenticated from '@/layouts/LayoutAuthenticated.vue'
-import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton.vue'
-import NotificationBarInCard from '@/components/NotificationBarInCard.vue'
+import { useMainStore } from '@/stores/main'
+import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 
-const selectOptions = [
-  { id: 1, label: 'Business development' },
-  { id: 2, label: 'Marketing' },
-  { id: 3, label: 'Sales' }
-]
+const mainStore = useMainStore()
+const router = useRouter()
+const isEdit = ref(false)
 
 const form = reactive({
-  name: 'John Doe',
-  email: 'john.doe@example.com',
-  phone: '',
-  department: selectOptions[0],
-  subject: '',
-  question: ''
+  username: 'John Doe',
+  to_address: 'john.doe@example.com',
+  mail_server: '',
+  domain: ''
 })
 
-const customElementsForm = reactive({
-  checkbox: ['lorem'],
-  radio: 'one',
-  switch: ['one'],
-  file: null
+onMounted(() => {
+  console.log(router.currentRoute.value)
+  let { userId } = router.currentRoute.value.params
+  if(userId) {
+    mainStore.getUser(userId, setUser)
+    isEdit.value = true
+  }
 })
 
-const submit = () => {
-  //
+const setUser = ({ data: { data } }) => {
+  form.username = data.username
+  form.to_address = data.to_address
+  form.mail_server = data.mail_server
+  form.domain = data.domain
 }
 
-const formStatusWithHeader = ref(true)
+const submit = () => {
+  if(isEdit.value) {
+    let { userId } = router.currentRoute.value.params
+    mainStore.updateUser(userId, form)
+  } else {
+    mainStore.createUser(form)
+  }
+  router.back()
+}
 
-const formStatusCurrent = ref(0)
+const reset = () => {
+  form.username = ""
+  form.to_address = ""
+  form.mail_server = ""
+  form.domain = ""
+}
 
-const formStatusOptions = ['info', 'success', 'danger', 'warning']
-
-const formStatusSubmit = () => {
-  formStatusCurrent.value = formStatusOptions[formStatusCurrent.value + 1]
-    ? formStatusCurrent.value + 1
-    : 0
+const back = () => {
+  router.back()
 }
 </script>
 
 <template>
   <LayoutAuthenticated>
     <SectionMain>
-      <SectionTitleLineWithButton :icon="mdiBallotOutline" title="Forms example" main>
-        <BaseButton
-          href="https://github.com/justboil/admin-one-vue-tailwind"
-          target="_blank"
-          :icon="mdiGithub"
-          label="Star on GitHub"
-          color="contrast"
-          rounded-full
-          small
-        />
+      <SectionTitleLineWithButton :icon="mdiTableBorder" :title="isEdit ? 'Edit User' : 'Create New User'" main>
       </SectionTitleLineWithButton>
+
       <CardBox form @submit.prevent="submit">
-        <FormField label="Grouped with icons">
-          <FormControl v-model="form.name" :icon="mdiAccount" />
-          <FormControl v-model="form.email" type="email" :icon="mdiMail" />
+        <FormField label="User Information">
+          <FormControl v-model="form.username" :icon="mdiAccount" placeholder="Username"/>
+          <FormControl v-model="form.to_address" type="email" :icon="mdiMail" placeholder="Email"/>
         </FormField>
 
-        <FormField label="With help line" help="Do not enter the leading zero">
-          <FormControl v-model="form.phone" type="tel" placeholder="Your phone number" />
+        <FormField label="Our Domain">
+          <FormControl v-model="form.domain" type="domain" placeholder="director.omnimailhost.com"/>
         </FormField>
 
-        <FormField label="Dropdown">
-          <FormControl v-model="form.department" :options="selectOptions" />
+        <FormField label="Mail Server">
+          <FormControl v-model="form.mail_server" type="domain" placeholder="gmail.com"/>
         </FormField>
 
         <BaseDivider />
-
-        <FormField label="Question" help="Your question. Max 255 characters">
-          <FormControl type="textarea" placeholder="Explain how we can help you" />
-        </FormField>
 
         <template #footer>
           <BaseButtons>
-            <BaseButton type="submit" color="info" label="Submit" />
-            <BaseButton type="reset" color="info" outline label="Reset" />
+            <BaseButton type="submit" color="info" :label="isEdit ? 'Update' : 'Submit'" @click="submit"/>
+            <BaseButton v-if="!isEdit" type="reset" color="info" outline label="Reset" @click="reset"/>
+            <BaseButton v-else type="reset" color="info" outline label="Back" @click="back"/>
           </BaseButtons>
-        </template>
-      </CardBox>
-    </SectionMain>
-
-    <SectionTitle>Custom elements</SectionTitle>
-
-    <SectionMain>
-      <CardBox>
-        <FormField label="Checkbox">
-          <FormCheckRadioGroup
-            v-model="customElementsForm.checkbox"
-            name="sample-checkbox"
-            :options="{ lorem: 'Lorem', ipsum: 'Ipsum', dolore: 'Dolore' }"
-          />
-        </FormField>
-
-        <BaseDivider />
-
-        <FormField label="Radio">
-          <FormCheckRadioGroup
-            v-model="customElementsForm.radio"
-            name="sample-radio"
-            type="radio"
-            :options="{ one: 'One', two: 'Two' }"
-          />
-        </FormField>
-
-        <BaseDivider />
-
-        <FormField label="Switch">
-          <FormCheckRadioGroup
-            v-model="customElementsForm.switch"
-            name="sample-switch"
-            type="switch"
-            :options="{ one: 'One', two: 'Two' }"
-          />
-        </FormField>
-
-        <BaseDivider />
-
-        <FormFilePicker v-model="customElementsForm.file" label="Upload" />
-      </CardBox>
-
-      <SectionTitle>Form with status example</SectionTitle>
-
-      <CardBox
-        class="md:w-7/12 lg:w-5/12 xl:w-4/12 shadow-2xl md:mx-auto"
-        is-form
-        is-hoverable
-        @submit.prevent="formStatusSubmit"
-      >
-        <NotificationBarInCard
-          :color="formStatusOptions[formStatusCurrent]"
-          :is-placed-with-header="formStatusWithHeader"
-        >
-          <span
-            ><b class="capitalize">{{ formStatusOptions[formStatusCurrent] }}</b> state</span
-          >
-        </NotificationBarInCard>
-        <FormField label="Fields">
-          <FormControl
-            v-model="form.name"
-            :icon-left="mdiAccount"
-            help="Your full name"
-            placeholder="Name"
-          />
-        </FormField>
-
-        <template #footer>
-          <BaseButton label="Trigger" type="submit" color="info" />
         </template>
       </CardBox>
     </SectionMain>
