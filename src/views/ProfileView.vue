@@ -1,16 +1,14 @@
 <script setup>
 import { reactive } from 'vue'
 import { useMainStore } from '@/stores/main'
-import { mdiAccount, mdiMail, mdiAsterisk, mdiFormTextboxPassword, mdiGithub } from '@mdi/js'
+import { mdiAccount, mdiMail, mdiAsterisk, mdiFormTextboxPassword } from '@mdi/js'
 import SectionMain from '@/components/SectionMain.vue'
 import CardBox from '@/components/CardBox.vue'
 import BaseDivider from '@/components/BaseDivider.vue'
 import FormField from '@/components/FormField.vue'
 import FormControl from '@/components/FormControl.vue'
-import FormFilePicker from '@/components/FormFilePicker.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import BaseButtons from '@/components/BaseButtons.vue'
-import UserCard from '@/components/UserCard.vue'
 import LayoutAuthenticated from '@/layouts/LayoutAuthenticated.vue'
 import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton.vue'
 
@@ -28,11 +26,22 @@ const passwordForm = reactive({
 })
 
 const submitProfile = () => {
+  mainStore.updateAdminProfile({
+    username: profileForm.name,
+    email: profileForm.email
+  })
   mainStore.setUser(profileForm)
 }
 
 const submitPass = () => {
-  //
+  if(passwordForm.password == passwordForm.password_confirmation) {
+    mainStore.updateAdminPassword(passwordForm, function(result) {
+      if(result.status == 200)
+        alert("Success!")
+      else alert("Failed!")
+    })
+  }
+
 }
 </script>
 

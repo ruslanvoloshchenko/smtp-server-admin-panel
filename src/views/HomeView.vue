@@ -1,5 +1,7 @@
 <script setup>
+import { onMounted } from 'vue'
 import { useMainStore } from '@/stores/main'
+import { useRouter } from 'vue-router'
 import {
   mdiAccountMultiple,
   mdiChartTimelineVariant,
@@ -10,6 +12,12 @@ import LayoutAuthenticated from '@/layouts/LayoutAuthenticated.vue'
 import SectionTitleLineWithButton from '@/components/SectionTitleLineWithButton.vue'
 
 const mainStore = useMainStore()
+
+const router = useRouter()
+
+onMounted(() => {
+  if(mainStore.token == "") router.push('/')
+})
 </script>
 
 <template>

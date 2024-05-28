@@ -17,7 +17,6 @@ createApp(App).use(router).use(pinia).mount('#app')
 const mainStore = useMainStore(pinia)
 
 // Fetch sample data
-mainStore.fetchUsers()
 mainStore.fetchSampleClients()
 mainStore.fetchSampleHistory()
 

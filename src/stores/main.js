@@ -1,12 +1,15 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import axios from 'axios'
+import router from '@/router'
 
-const API_URL = "http://localhost:8000/api/v1/users"
+const API_URL = "http://director.omnimailhost.net:8000/api/v1"
+// const API_URL = "http://localhost:8000/api/v1"
 
 export const useMainStore = defineStore('main', () => {
   const userName = ref('John Doe')
   const userEmail = ref('doe.doe.doe@example.com')
+  const userId = ref(0)
 
   const userAvatar = computed(
     () =>
@@ -21,6 +24,7 @@ export const useMainStore = defineStore('main', () => {
   const clients = ref([])
   const history = ref([])
   const users = ref([])
+  const token = ref("")
 
   function setUser(payload) {
     if (payload.name) {
@@ -43,7 +47,11 @@ export const useMainStore = defineStore('main', () => {
   }
 
   function fetchUsers() {
-    axios.get(`${API_URL}`)
+    const headers = {
+      'Authorization': `Bearer ${token.value}`,
+      'Content-Type': 'application/json', // Example of another header
+    };
+    axios.get(`${API_URL}/users`, { headers })
     .then((result) => {
       users.value = result?.data?.data
     })
@@ -64,10 +72,13 @@ export const useMainStore = defineStore('main', () => {
   }
 
   function deleteUser(id) {
+    const headers = {
+      'Authorization': `Bearer ${token.value}`,
+      'Content-Type': 'application/json', // Example of another header
+    };
     axios
-      .delete(`${API_URL}/${id}`)
+      .delete(`${API_URL}/users/${id}`, { headers })
       .then((result) => {
-        console.log(result)
         fetchUsers()
       })
       .catch((error) => {
@@ -76,10 +87,13 @@ export const useMainStore = defineStore('main', () => {
   }
 
   function createUser(data) {
+    const headers = {
+      'Authorization': `Bearer ${token.value}`,
+      'Content-Type': 'application/json', // Example of another header
+    };
     axios
-      .post(`${API_URL}`, data)
+      .post(`${API_URL}/users`, data, { headers} )
       .then((result) => {
-        console.log(result)
         fetchUsers()
       })
       .catch((error) => {
@@ -88,8 +102,12 @@ export const useMainStore = defineStore('main', () => {
   }
 
   function getUser(id, cb) {
+    const headers = {
+      'Authorization': `Bearer ${token.value}`,
+      'Content-Type': 'application/json', // Example of another header
+    };
     axios
-      .get(`${API_URL}/${id}`)
+      .get(`${API_URL}/users/${id}`, { headers })
       .then((result) => {
         cb(result)
       })
@@ -99,10 +117,13 @@ export const useMainStore = defineStore('main', () => {
   }
 
   function updateUser(id, data) {
+    const headers = {
+      'Authorization': `Bearer ${token.value}`,
+      'Content-Type': 'application/json', // Example of another header
+    };
     axios
-      .patch(`${API_URL}/${id}`, data)
+      .patch(`${API_URL}/users/${id}`, data, { headers })
       .then((result) => {
-        console.log(result)
         fetchUsers()
       })
       .catch((error) => {
@@ -110,7 +131,61 @@ export const useMainStore = defineStore('main', () => {
       })
   }
 
+  function login(data, cb) {
+    axios
+      .post(`${API_URL}/login`, data)
+      .then(({ data }) => {
+        token.value = data.token
+        userId.value = data.id
+        setUser({ name: data.username, email: data.email })
+        cb(data)
+      })
+      .catch((error) => {
+        alert("Wrong Information: " + error.message)
+      })
+  }
+
+  function logout(state) {
+    if(state) {
+      token.value = ""
+      router.push('/')
+    }
+  }
+
+  function updateAdminProfile(data, cb) {
+    const headers = {
+      'Authorization': `Bearer ${token.value}`,
+      'Content-Type': 'application/json', // Example of another header
+    };
+    axios
+      .patch(`${API_URL}/roles/${userId.value}/profile`, data, { headers })
+      .then((result) => {
+        cb(result)
+      })
+      .catch((error) => {
+        alert(error.message)
+      })
+  }
+
+
+  function updateAdminPassword(data, cb) {
+    const headers = {
+      'Authorization': `Bearer ${token.value}`,
+      'Content-Type': 'application/json', // Example of another header
+    };
+    axios
+      .patch(`${API_URL}/roles/${userId.value}/password`, data, { headers })
+      .then((result) => {
+        cb(result)
+      })
+      .catch((error) => {
+        alert(error.message)
+      })
+  }
+
+
   return {
+    token,
     userName,
     userEmail,
     userAvatar,
@@ -118,6 +193,8 @@ export const useMainStore = defineStore('main', () => {
     clients,
     history,
     users,
+    login,
+    logout,
     setUser,
     getUser,
     createUser,
@@ -125,6 +202,8 @@ export const useMainStore = defineStore('main', () => {
     updateUser,
     fetchUsers,
     fetchSampleClients,
-    fetchSampleHistory
+    fetchSampleHistory,
+    updateAdminProfile,
+    updateAdminPassword
   }
 })

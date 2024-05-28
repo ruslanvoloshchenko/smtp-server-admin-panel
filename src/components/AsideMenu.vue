@@ -23,14 +23,16 @@ const asideLgCloseClick = (event) => {
 </script>
 
 <template>
-  <AsideMenuLayer
-    :menu="menu"
-    :class="[
-      isAsideMobileExpanded ? 'left-0' : '-left-60 lg:left-0',
-      { 'lg:hidden xl:flex': !isAsideLgActive }
-    ]"
-    @menu-click="menuClick"
-    @aside-lg-close-click="asideLgCloseClick"
-  />
-  <OverlayLayer v-show="isAsideLgActive" z-index="z-30" @overlay-click="asideLgCloseClick" />
+  <div>
+    <AsideMenuLayer
+      :menu="menu"
+      :class="[
+        isAsideMobileExpanded ? 'left-0' : '-left-60 lg:left-0',
+        { 'lg:hidden xl:flex': !isAsideLgActive }
+      ]"
+      @menu-click="menuClick"
+      @aside-lg-close-click="asideLgCloseClick"
+    />
+    <OverlayLayer v-show="isAsideLgActive" z-index="z-30" @overlay-click="asideLgCloseClick" />
+  </div>
 </template>

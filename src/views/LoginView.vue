@@ -1,6 +1,7 @@
 <script setup>
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
+import { useMainStore } from '@/stores/main'
 import { mdiAccount, mdiAsterisk } from '@mdi/js'
 import SectionFullScreen from '@/components/SectionFullScreen.vue'
 import CardBox from '@/components/CardBox.vue'
@@ -11,16 +12,25 @@ import BaseButton from '@/components/BaseButton.vue'
 import BaseButtons from '@/components/BaseButtons.vue'
 import LayoutGuest from '@/layouts/LayoutGuest.vue'
 
+const mainStore = useMainStore()
+
 const form = reactive({
-  login: 'john.doe',
-  pass: 'highly-secure-password-fYjUw-',
-  remember: true
+  login: '',
+  pass: '',
+  remember: false
 })
 
 const router = useRouter()
 
 const submit = () => {
-  router.push('/dashboard')
+  mainStore.login({username: form.login, password: form.pass},
+    (result) => {
+      if(result.token) {
+        router.push('/dashboard')
+        mainStore.fetchUsers()
+      }
+    }
+  )
 }
 </script>
 
@@ -57,7 +67,6 @@ const submit = () => {
         <template #footer>
           <BaseButtons>
             <BaseButton type="submit" color="info" label="Login" />
-            <BaseButton to="/dashboard" color="info" outline label="Back" />
           </BaseButtons>
         </template>
       </CardBox>

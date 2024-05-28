@@ -25,7 +25,6 @@ const form = reactive({
 })
 
 onMounted(() => {
-  console.log(router.currentRoute.value)
   let { userId } = router.currentRoute.value.params
   if(userId) {
     mainStore.getUser(userId, setUser)
