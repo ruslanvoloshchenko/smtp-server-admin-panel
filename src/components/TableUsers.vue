@@ -93,7 +93,7 @@ const handleEdit = (user) => {
         <tr>
           <th v-if="checkable" />
           <th>Name</th>
-          <th>Our Domain</th>
+          <th>Password</th>
           <th>Real Address</th>
           <th>Mail Server</th>
           <th>Created</th>

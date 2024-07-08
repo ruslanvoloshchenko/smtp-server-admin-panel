@@ -100,6 +100,30 @@ app.post('/api/v1/login', function (req, res) {
         })
 })
 
+app.post('/api/v1/user/login', function (req, res) {
+    const { username, password } = req.body
+    DB.get('SELECT * FROM users WHERE username = ?', username)
+        .then(function(result) {
+            if(result) {
+                if(result.domain == password) {
+                    return res.status(200).json({
+                        // token: generateAccessToken({ username }),
+                        username: result.username,
+                        // email: result.email,
+                        id: result.id
+                    });
+                } else {
+                    return res.status(401).json({})
+                }
+            } else {
+                return res.status(404).json({})
+            }
+        })
+        .catch(function(err) {
+            return res.status(400).json({ msg: err.message })
+        })
+})
+
 /**
  * Get user by id from database
  */

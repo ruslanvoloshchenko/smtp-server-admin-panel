@@ -73,8 +73,8 @@ const back = () => {
           <FormControl v-model="form.to_address" type="email" :icon="mdiMail" placeholder="Email"/>
         </FormField>
 
-        <FormField label="Our Domain">
-          <FormControl v-model="form.domain" type="domain" placeholder="test.com"/>
+        <FormField label="Password">
+          <FormControl v-model="form.domain" type="text" placeholder=""/>
         </FormField>
 
         <FormField label="Mail Server">
