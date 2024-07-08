@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import axios from 'axios'
 import router from '@/router'
 
-const API_URL = "http://power-drpozd.pitunnel.com/api/v1"
+const API_URL = "https://power-drpozd.pitunnel.com/api/v1"
 // const API_URL = "http://localhost:8888/api/v1"
 
 export const useMainStore = defineStore('main', () => {
