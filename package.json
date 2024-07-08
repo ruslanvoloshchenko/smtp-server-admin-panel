@@ -6,14 +6,22 @@
     "build": "vite build",
     "preview": "vite preview --port 4173",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "server": "node server.js"
   },
   "dependencies": {
     "@mdi/js": "^7.0.96",
     "axios": "^1.5.0",
+    "body-parser": "^1.20.2",
     "chart.js": "^4.4.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
     "numeral": "^2.0.6",
     "pinia": "^2.1.6",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4"
   },

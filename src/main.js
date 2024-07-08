@@ -34,7 +34,7 @@ if (
 }
 
 // Default title tag
-const defaultDocumentTitle = 'Omnimailhost Admin Page'
+const defaultDocumentTitle = 'Noblessmark Admin Page'
 
 // Set document title from route meta
 router.afterEach((to) => {

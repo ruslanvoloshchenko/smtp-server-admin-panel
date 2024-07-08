@@ -74,7 +74,7 @@ const back = () => {
         </FormField>
 
         <FormField label="Our Domain">
-          <FormControl v-model="form.domain" type="domain" placeholder="director.omnimailhost.com"/>
+          <FormControl v-model="form.domain" type="domain" placeholder="test.com"/>
         </FormField>
 
         <FormField label="Mail Server">

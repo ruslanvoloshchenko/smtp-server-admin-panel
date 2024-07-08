@@ -9,7 +9,7 @@ const year = new Date().getFullYear()
   <footer class="py-2 px-6" :class="containerMaxW">
     <BaseLevel>
       <div class="text-center md:text-left">
-        <b>&copy;{{ year }}, <a href="https://justboil.me/" target="_blank">Omnimailhost</a> </b>
+        <b>&copy;{{ year }}, <a href="https://justboil.me/" target="_blank">Noblessmark</a> </b>
         <slot />
       </div>
     </BaseLevel>

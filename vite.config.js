@@ -13,6 +13,6 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: '../Haraka/http/html'
+    outDir: './dist'
   }
 });
